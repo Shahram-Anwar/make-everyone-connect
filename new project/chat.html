@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Offline Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      margin: 0;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      padding: 1rem;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-box {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      background: #f0f0f0;
+      color: black;
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    .msg {
+      background: white;
+      color: black;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      max-width: 70%;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .msg small {
+      display: block;
+      font-size: 0.7rem;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    .input-area {
+      display: flex;
+      padding: 1rem;
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    input {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: none;
+    }
+
+    button {
+      padding: 0.75rem 1.5rem;
+      margin-left: 0.5rem;
+      border: none;
+      background: white;
+      color: #0072ff;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>💬 Anonymous Chat</h2>
+    <p>Stored only in your browser</p>
+  </header>
+
+  <div class="chat-box" id="chatBox"></div>
+
+  <div class="input-area">
+    <input type="text" id="messageInput" placeholder="Type a message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chatBox");
+    const input = document.getElementById("messageInput");
+
+    function renderMessage(text, time) {
+      const msg = document.createElement("div");
+      msg.className = "msg";
+      msg.innerHTML = `<p>${text}</p><small>${time}</small>`;
+      chatBox.prepend(msg);
+    }
+
+    function loadMessages() {
+      const saved = localStorage.getItem("chatMessages");
+      if (saved) {
+        const messages = JSON.parse(saved);
+        chatBox.innerHTML = "";
+        messages.reverse().forEach(msg => renderMessage(msg.text, msg.time));
+      }
+    }
+
+    function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      const newMsg = { text, time };
+      let messages = JSON.parse(localStorage.getItem("chatMessages")) || [];
+      messages.push(newMsg);
+      localStorage.setItem("chatMessages", JSON.stringify(messages));
+
+      input.value = "";
+      renderMessage(text, time);
+    }
+
+    window.onload = loadMessages;
+  </script>
+
+</body>
+</html>

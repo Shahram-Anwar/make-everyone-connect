@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>University Announcements</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #141E30, #243B55);
+      color: white;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .posts {
+      max-width: 800px;
+      margin: 2rem auto;
+      display: grid;
+      gap: 1rem;
+      padding: 0 1rem;
+    }
+
+    .post {
+      background: white;
+      color: black;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .post small {
+      display: block;
+      margin-top: 0.5rem;
+      opacity: 0.6;
+    }
+
+    a.back {
+      display: block;
+      text-align: center;
+      margin: 2rem 0;
+      color: white;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📢 University Announcements</h1>
+    <p>Posted by Admin</p>
+  </header>
+
+  <div class="posts" id="postList">
+    <!-- Admin posts will appear here -->
+  </div>
+
+  <a href="index.html" class="back">⬅️ Back to Home</a>
+
+  <script>
+    const postList = document.getElementById("postList");
+    const storedPosts = JSON.parse(localStorage.getItem("adminPosts") || "[]");
+
+    storedPosts.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "post";
+      div.innerHTML = `<p>${p.text}</p><small>Posted • ${p.time}</small>`;
+      postList.appendChild(div);
+    });
+  </script>
+</body>
+</html>

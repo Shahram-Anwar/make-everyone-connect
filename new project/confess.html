@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anonymous Confessions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #ff6a00, #ee0979);
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: white;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .confessions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 1rem;
+      max-width: 1000px;
+      margin: 2rem auto;
+    }
+
+    @media (min-width: 600px) {
+      .confessions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .confessions {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .confession {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      word-break: break-word;
+    }
+
+    .confession p {
+      margin: 0;
+    }
+
+    .confession small {
+      opacity: 0.6;
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    .submit-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      color: #ee0979;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      z-index: 1000;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    .modal-content textarea {
+      width: 100%;
+      height: 120px;
+      padding: 1rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: none;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .modal-content button {
+      margin-top: 1rem;
+      padding: 0.6rem 1.5rem;
+      background: #ee0979;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    a.back {
+      display: block;
+      text-align: center;
+      margin: 2rem 0;
+      color: white;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="submit-btn" onclick="openModal()">+ Submit</button>
+
+  <header>
+    <h1>Anonymous Confessions</h1>
+    <p>Let it out — no one knows it's you.</p>
+  </header>
+
+  <div class="confessions" id="confessionList">
+    <!-- Confessions will appear here -->
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2>Submit Your Confession</h2>
+      <textarea id="confessionText" placeholder="Type your confession..."></textarea>
+      <button onclick="submitConfession()">Submit</button>
+    </div>
+  </div>
+
+  <a href="index.html" class="back">⬅️ Back to Home</a>
+
+  <script>
+    const confessionList = document.getElementById("confessionList");
+    const modal = document.getElementById("modal");
+    const confessionText = document.getElementById("confessionText");
+
+    let stored = JSON.parse(localStorage.getItem("confessions") || "[]");
+    stored.forEach(c => renderConfession(c.text, c.time));
+
+    function openModal() {
+      modal.style.display = "flex";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+      confessionText.value = "";
+    }
+
+    window.onclick = function(e) {
+      if (e.target === modal) closeModal();
+    };
+
+    function submitConfession() {
+      const text = confessionText.value.trim();
+      if (text === "") return;
+      const time = new Date().toLocaleString();
+      renderConfession(text, time);
+      stored.unshift({ text, time });
+      localStorage.setItem("confessions", JSON.stringify(stored));
+      closeModal();
+    }
+
+    function renderConfession(text, time) {
+      const div = document.createElement("div");
+      div.className = "confession";
+      div.innerHTML = `<p>${text}</p><small>Anonymous • ${time}</small>`;
+      confessionList.prepend(div);
+    }
+  </script>
+
+</body>
+</html>
